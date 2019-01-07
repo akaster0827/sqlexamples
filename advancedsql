@@ -1,0 +1,127 @@
+select
+  a.department_id
+  , b.department_name
+  , sum(salary)
+  , trunc(avg(salary)) AVG_salary
+  , trunc(var_pop(salary)) Var_POP
+  , trunc(stddev_pop(salary)) STD_DEV
+  
+from employees a inner join departments b 
+    on a.department_id = b.department_id 
+
+group by 
+  b.department_name, a.department_id
+  order by 3 desc,4 ;
+-------------------------------------------------------------
+select
+    a.department_id
+  , department_name
+  , min(salary)
+  , max(salary)
+    
+from employees a inner join departments b 
+    on a.department_id = b.department_id    
+group by b.department_name, a.department_id;
+
+
+
+-----------------------------------------------------------
+select * from departments;
+
+-----------------------------------------------------------
+select
+  last_name
+  , department_id
+  , salary
+from
+  employees
+where
+  last_name like '%Ba%'
+or last_name like '%Be%'
+;
+
+--------------------------------------------------------------
+select * from jobs where job_title like '%Assist%';
+
+select
+  overlay(job_title, 'Asst.',-14,0)
+from jobs
+where job_title like '%Assistant%';
+-----------------------------------------------------------------------
+select * from jobs where job_title like '%clerk%' or job_title like '%Clerk%';
+
+---------------------------------------------------------------
+select 
+    job_title
+  , avg(salary) average_Salary
+  , max(salary) Highest_salary
+  , min(salary) Lowest_salary
+from jobs a inner join employees b on a.job_id = b.job_id
+--where regexp_like(job_title,'(Finance|Sales|Purchasing) Manager')
+--or regexp_like(job_title,'(Stock|Shipping) Clerk')
+group by job_title
+having regexp_like(job_title,'(Finance|Sales|Purchasing) Manager')
+or regexp_like(job_title,'(Stock|Shipping) Clerk')
+order by 2 desc;
+
+
+------------------------------------------------------------
+
+select 
+    job_id
+  , avg(salary) 
+  , round(avg(salary),2)*1.0
+from
+  employees
+group by
+  job_id
+order by 2 desc;
+--------------------------------------------------------------
+/* subquery in select statement */
+select
+    e1.last_name
+  , e1.salary
+  --, e1.job_id
+  , job_title
+  , (select round(avg(Salary)) from employees e2 where e2.job_id = e1.job_id) dept_avg_sal
+from employees e1 inner join jobs j1 on e1.job_id = j1.job_id;
+
+
+-------------------------------------------------------------------
+/* subquery in from clause */
+
+select 
+   sq1.job_id
+  , round(avg(sq1.salary))
+from  
+    (select
+        job_id
+      , salary
+    from employees
+    where
+      salary > 10000) sq1
+group by
+  sq1.job_id;
+
+-----------------------------------------------------
+
+/* subquery in where clause */
+
+Select
+  job_id
+  , last_name
+  , salary
+from employees sq1
+where
+  sq1.salary = (select
+                    max(salary)
+                  from employees sq2);
+
+---------------------------------------------------------------
+
+/* subquery in where clause */
+
+
+  
+  
+  
