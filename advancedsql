@@ -152,6 +152,9 @@ inner join countries c on l.country_id = c.country_id;
   
   
 -------------------------------------------------------------------------
+
+https://www.mssqltips.com/sqlservertip/5118/sql-server-cte-vs-temp-table-vs-table-variable-performance-test/
+
 -- CTE
 WITH t (customerid,lastorderdate) AS 
 (SELECT customerid,max(orderdate) FROM sales.SalesOrderHeader
