@@ -119,9 +119,64 @@ where
 
 ---------------------------------------------------------------
 
+
 /* subquery in where clause */
 
+Select
+  job_id
+  , last_name
+  , salary
+from employees sq1
+where
+  sq1.salary = (select
+                    max(salary)
+                  from employees sq2);
+
+---------------------------------------------------------------
+
+/* inner join example */
+
+select 
+    d.department_name
+    , l.street_address
+    , l.city
+    , l.state_province
+    , c.country_name
+    
+from departments d 
+inner join locations l on d.location_id = l.location_id
+inner join countries c on l.country_id = c.country_id;
+;
+
 
   
   
-  
+-------------------------------------------------------------------------
+-- CTE
+WITH t (customerid,lastorderdate) AS 
+(SELECT customerid,max(orderdate) FROM sales.SalesOrderHeader
+ GROUP BY customerid)
+SELECT * FROM sales.salesorderheader soh
+INNER JOIN t ON soh.customerid=t.customerid AND soh.orderdate=t.lastorderdate
+GO
+
+-- Temp table
+CREATE TABLE #temptable (customerid [int] NOT NULL PRIMARY KEY,lastorderdate [datetime] NULL);
+INSERT INTO #temptable
+SELECT customerid,max(orderdate) lastorderdate FROM sales.SalesOrderHeader
+ GROUP BY customerid;
+SELECT * from sales.salesorderheader soh
+INNER JOIN #temptable t ON soh.customerid=t.customerid AND soh.orderdate=t.lastorderdate
+drop table #temptable
+GO
+
+-- Table variable
+DECLARE @tablevariable TABLE (customerid [int] NOT NULL PRIMARY KEY,lastorderdate [datetime] NULL);
+INSERT INTO @tablevariable
+SELECT customerid,max(orderdate) lastorderdate FROM sales.SalesOrderHeader
+ GROUP BY customerid;
+SELECT * from sales.salesorderheader soh
+INNER JOIN @tablevariable t ON soh.customerid=t.customerid AND soh.orderdate=t.lastorderdate
+GO
+
+-----------------------------------------------------------------------------------------------------------
